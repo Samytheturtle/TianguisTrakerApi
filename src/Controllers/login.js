@@ -8,14 +8,12 @@ const loginAccsess = async(req,res)=>{
         const seller = {correoVendedor,contraseniaVendedor:passwordHashed}
 
         const connection = await getConnection();
-        const passwordBD = await connection.query("SELECT contraseniaVendedor from vendedor where correoVendedor = ?",correoVendedor);
-        var data=JSON.parse(JSON.stringify(passwordBD));
-        
-        
-        const acceso = await compare(contraseniaVendedor,data[1].contraseniaVendedor);
+        const passwordBD = await connection.query("SELECT contraseniaVendedor from vendedor where contraseniaVendedor = ?",seller.contraseniaVendedor);
+        var data = JSON.parse(JSON.stringify(passwordBD));
+        const acceso = await compare(contraseniaVendedor,"$2a$10$q88YO2XntpOnFcbY4h.EeOOpfNr55mRLKBMAiiTITE6C47iq4RyGO");
         if(acceso){
-            const result = await connection.query("SELECT nombreVendedor, correoVendedor from vendedor where correoVendedor = ?", correoVendedor);
-            res.json(result);
+            const result = await connection.query("SELECT idVendedor from vendedor where correoVendedor = ?", seller.correoVendedor);
+            res.send(result[0]);
             console.log("Logueado");
         }else{
             res.json(400);
@@ -33,8 +31,6 @@ const encrypt = async (password) => {
 }
 
 const compare = async (password, pass) => {
-    console.log(password);
-    console.log(pass);
     return await bcrypt.compare(password, pass);
 }
 
