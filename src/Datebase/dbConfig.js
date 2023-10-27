@@ -1,16 +1,16 @@
-import mysql from "promise-mysql";
+const mysql = require("mysql2/promise"); // Importar la versión de Promesas de mysql2
 require('dotenv').config()
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
     host: process.env.SERVER,
     database: process.env.DB_NAME,
     user: process.env.DB_USER,
     password: process.env.DB_PWD
-
 });
 
-const getConnection = () => {
-    console.log('conexion exitosa con la bd')
+const getConnection = async () => {
+    console.log("Conexion exitosa")
+    const connection = await pool.getConnection();
     return connection;
 };
 

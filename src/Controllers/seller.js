@@ -1,12 +1,15 @@
 const bcrypt = require('bcryptjs')
-
+const {getConnection} = require("../Datebase/dbConfig.js")
 const addSeller = async(req,res)=>{
     try{
-        const {nombre, correo, fechaNacimiento, password} = req.body;
-        const passwordHashed = await encrypt(password);
-        const seller = {nombre, correo, fechaNacimiento, password:passwordHashed}
+        const {nombreVendedor, correoVendedor, fechaNacimientoVendedor, contraseniaVendedor} = req.body;
+        const passwordHashed = await encrypt(contraseniaVendedor);
+        const seller = {nombreVendedor, correoVendedor, fechaNacimientoVendedor, contraseniaVendedor:passwordHashed}
 
-        res.json({ message: "Vendedor Registrado" });
+        const connection = await getConnection();
+        const result = await connection.query("INSERT INTO vendedor SET ?", seller);
+
+        res.json(result);
     }catch(error){
         res.status(500);
         res.send(error.message);
