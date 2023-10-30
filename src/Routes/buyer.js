@@ -1,8 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
 
-const buyerController = require("../Controllers/buyer.js");
+const router = Router();
 
-router.post("/addBuyer",buyerController.addBuyer);
+import {methods as buyer} from "../Controllers/buyer.js";
+
+router.post("/",buyer.addBuyer);
 
 module.exports = router;

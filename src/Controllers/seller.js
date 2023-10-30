@@ -1,5 +1,6 @@
-const bcrypt = require('bcryptjs')
-const {getConnection} = require("../Datebase/dbConfig.js")
+const bcrypt = require('bcryptjs');
+import { getConnection } from "../Datebase/dbConfig.js";
+
 const addSeller = async(req,res)=>{
     try{
         const {nombreVendedor, correoVendedor, fechaNacimientoVendedor, contraseniaVendedor} = req.body;
@@ -24,6 +25,6 @@ const encrypt = async (password) => {
     return hash;
 }
 
-module.exports = {
+export const methods = {
     addSeller
 };

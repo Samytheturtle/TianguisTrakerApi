@@ -1,15 +1,32 @@
 const bcrypt = require('bcryptjs')
-const {getConnection} = require("../Datebase/dbConfig.js")
+import { getConnection } from "../Datebase/dbConfig.js";
+const { existEmail } = require("../Helpers/validateUsers.js")
+import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
+
+
 const addBuyer = async(req,res)=>{
     try{
-        const {nombreComprador, correoComprador, fechaNacimientoComprador, contraseniaComprador} = req.body;
-        const passwordHashed = await encrypt(contraseniaComprador);
-        const buyer = {nombreComprador, correoComprador, fechaNacimientoComprador, contraseniaComprador:passwordHashed}
+        const {correoUsuario, contraseniaUsuario, nombreComprador, ubicacionComprador, fechaNacimientoComprador} = req.body;
+        const existEmailUser= await existEmail(correoUsuario);
 
-        const connection = await getConnection();
-        const result = await connection.query("INSERT INTO comprador SET ?", buyer);
+        if(!existEmailUser){
+            const passwordHashed = await encrypt(contraseniaUsuario);
+            const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
 
-        res.json(result);
+            const connection = await getConnection();
+
+            const [resultBuyer] = await connection.query(SPI_usuario, usuario);
+            const idUsuarioComprador = resultBuyer.insertId;
+
+    
+            const buyer ={nombreComprador,ubicacionComprador,fechaNacimientoComprador,idUsuarioComprador}
+            const result = await connection.query(SPI_usuarioRegisterBuyer,buyer);
+            res.json(result);
+        }else{
+            res.json({ message: "Usuario ya registrado" });
+            return res.status(409);
+        }
+       
     }catch(error){
         res.status(500);
         res.send(error.message);
@@ -24,6 +41,7 @@ const encrypt = async (password) => {
     return hash;
 }
 
-module.exports = {
+
+export const methods = {
     addBuyer
 };

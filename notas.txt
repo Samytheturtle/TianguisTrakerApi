@@ -1,0 +1,21 @@
+Login:
+    loginAuth -> recibir un email, contrasenia
+    decifrar la contrasenia
+    
+    Retorno -> id (usuario)
+
+Buyer:
+    addBuyer -> (usuarios): correoUsuario, contraseniaUsuario, (Comprador): idComprador, nombreComprador, ubicacionComprador, fechaNacimientoComprador
+    Cifrar la contrasenia
+
+    Retorno: 200
+
+Seller:
+    addSeller -> (usuarios): correoUsuario, contraseniaUsuario,(Vendedor): nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiércolesVendedor
+    horarioJuevesVendedor, horarioViernesVendedor, horarioSábadoVendedor, horarioDomingoVendedor
+
+    Cifrar la contrasenia
+
+    Retorno: 200
+
+

@@ -1,40 +1,39 @@
-const bcrypt = require('bcryptjs')
-const {getConnection} = require("../Datebase/dbConfig.js")
+import { getConnection } from "../Datebase/dbConfig.js"
+import { compare } from "../Helpers/handleByEncript.js"
+const { existEmail, findOne, getId } = require("../Helpers/validateUsers.js")
+const { generateAccessToken } = require("../Helpers/jwtHelperkey.js")
 
-const loginAccsess = async(req,res)=>{
+const loginAuth = async (req,res) => {
     try{
-        const {correoVendedor,contraseniaVendedor} = req.body;
-        const passwordHashed = await encrypt(contraseniaVendedor);
-        const seller = {correoVendedor,contraseniaVendedor:passwordHashed}
+        const {correoUsuario, contraseniaUsuario} = req.body;
+        const equalEmail = await existEmail(correoUsuario);
+        
+        if(equalEmail){
+            const encryp = await findOne(correoUsuario);
+            const checkPassword = await compare(contraseniaUsuario,encryp);
 
-        const connection = await getConnection();
-        const passwordBD = await connection.query("SELECT contraseniaVendedor from vendedor where contraseniaVendedor = ?",seller.contraseniaVendedor);
-        var data = JSON.parse(JSON.stringify(passwordBD));
-        const acceso = await compare(contraseniaVendedor,"$2a$10$q88YO2XntpOnFcbY4h.EeOOpfNr55mRLKBMAiiTITE6C47iq4RyGO");
-        if(acceso){
-            const result = await connection.query("SELECT idVendedor from vendedor where correoVendedor = ?", seller.correoVendedor);
-            res.send(result[0]);
-            console.log("Logueado");
+            if(checkPassword){
+                const connection = await getConnection();
+                const emailUser = {correoUsuario: correoUsuario};
+                const accessToken = generateAccessToken(emailUser);
+                const idUser = await getId(correoUsuario);
+                res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idUser});
+            }else{
+                res.json({ message: "Contraseña incorrecta" });
+                return res.status(401);
+            }
+
         }else{
-            res.json(400);
+            res.json({ message: "Correo no encontrado" });
+            return res.status(404);
         }
+        
     }catch(error){
         res.status(500);
         res.send(error.message);
     }
-}
+};
 
-const encrypt = async (password) => {
-    const saltRounds = 10; // Número de rondas de encriptación
-    const hash = await bcrypt.hash(password, saltRounds);
-    return hash;
-}
-
-const compare = async (password, pass) => {
-    return await bcrypt.compare(password, pass);
-}
-
-
-module.exports = {
-    loginAccsess
+export const methods = {
+    loginAuth
 };
