@@ -12,10 +12,43 @@ Buyer:
 
 Seller:
     addSeller -> (usuarios): correoUsuario, contraseniaUsuario,(Vendedor): nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiércolesVendedor
-    horarioJuevesVendedor, horarioViernesVendedor, horarioSábadoVendedor, horarioDomingoVendedor
+    horarioJuevesVendedor, horarioViernesVendedor, horarioSábadoVendedor, horarioDomingoVendedor,idTianguisVendedor, fechaNacimientoVendedor, idUsuarioVendedor 
 
     Cifrar la contrasenia
 
     Retorno: 200
 
+Tianguis:
+    getAllTianguis-> idTianguis
 
+    retorno 200
+
+{
+  "correoUsuario": "usuarioEjemplo@email.com",
+  "contraseniaUsuario": "miContrasena123"
+}
+
+{
+  "correoUsuario": "usuarioEjemplo@email.com",
+  "contraseniaUsuario": "miContrasena123",
+  "nombreComprador": "Ejemplo Nombre",
+  "ubicacionComprador": "Ciudad Ejemplo, País Ejemplo",
+  "fechaNacimientoComprador": "1990-05-15"
+}
+
+{
+  "correoUsuario": "ejemplo@correo.com",
+  "contraseniaUsuario": "password123",
+  "nombreVendedor": "Juan Pérez",
+  "calificacionVendedor": 4.8,
+  "horarioLunesVendedor": "9:00 AM - 5:00 PM",
+  "horarioMartesVendedor": "9:00 AM - 5:00 PM",
+  "horarioMiércolesVendedor": "9:00 AM - 5:00 PM",
+  "horarioJuevesVendedor": "9:00 AM - 5:00 PM",
+  "horarioViernesVendedor": "9:00 AM - 5:00 PM",
+  "horarioSábadoVendedor": "10:00 AM - 3:00 PM",
+  "horarioDomingoVendedor": "Cerrado",
+  "idTianguisVendedor": 12345,
+  "fechaNacimientoVendedor": "1980-03-15",
+  "idUsuarioVendedor": 9876
+}
