@@ -21,6 +21,7 @@ Seller:
 Tianguis:
     getAllTianguis-> idTianguis
 
+
     retorno 200
 
 {
@@ -40,15 +41,38 @@ Tianguis:
   "correoUsuario": "ejemplo@correo.com",
   "contraseniaUsuario": "password123",
   "nombreVendedor": "Juan Pérez",
-  "calificacionVendedor": 4.8,
+  "calificacionVendedor": 0,
   "horarioLunesVendedor": "9:00 AM - 5:00 PM",
   "horarioMartesVendedor": "9:00 AM - 5:00 PM",
-  "horarioMiércolesVendedor": "9:00 AM - 5:00 PM",
+  "horarioMiercolesVendedor": "9:00 AM - 5:00 PM",
   "horarioJuevesVendedor": "9:00 AM - 5:00 PM",
   "horarioViernesVendedor": "9:00 AM - 5:00 PM",
-  "horarioSábadoVendedor": "10:00 AM - 3:00 PM",
+  "horarioSabadoVendedor": "10:00 AM - 3:00 PM",
   "horarioDomingoVendedor": "Cerrado",
-  "idTianguisVendedor": 12345,
   "fechaNacimientoVendedor": "1980-03-15",
-  "idUsuarioVendedor": 9876
+  "idTianguisVendedor": 5
 }
+
+
+Primer Tianguis:
+INSERT INTO `databasetianguis`.`tianguis` (
+  `nombreTianguis`,
+  `direccionTianguis`,
+  `horarioLunesTianguis`,
+  `horarioMartesTianguis`,
+  `horarioMiercolesTianguis`,
+  `horarioJuevesTianguis`,
+  `horarioViernesTianguis`,
+  `horarioSabadoTianguis`,
+  `horarioDomingoTianguis`
+) VALUES (
+  'Tianguis del Centro',
+  '123 Calle Principal, Ciudad',
+  '7:00 - 12:00',
+  '7:00 - 12:00',
+  '7:00 - 12:00',
+  '7:00 - 12:00',
+  '7:00 - 12:00',
+  '7:00 - 12:00',
+  '7:00 - 12:00'
+);

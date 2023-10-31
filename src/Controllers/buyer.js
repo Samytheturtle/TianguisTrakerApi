@@ -21,9 +21,9 @@ const addBuyer = async(req,res)=>{
     
             const buyer ={nombreComprador,ubicacionComprador,fechaNacimientoComprador,idUsuarioComprador}
             const result = await connection.query(SPI_usuarioRegisterBuyer,buyer);
-            res.json(result);
+            res.json({message: "Usuario registrado con exito" });
         }else{
-            res.json({ message: "Usuario ya registrado" });
+            res.json({ message: "El correo se encuentra en uso" });
             return res.status(409);
         }
        

@@ -6,8 +6,8 @@ import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "
 
 const addSeller = async(req,res)=>{
     try{
-        const {correoUsuario, contraseniaUsuario, nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiércolesVendedor,
-            horarioJuevesVendedor, horarioViernesVendedor, horarioSábadoVendedor, horarioDomingoVendedor} = req.body;
+        const {correoUsuario, contraseniaUsuario, nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+            horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,fechaNacimientoVendedor,idTianguisVendedor} = req.body;
         const existEmailUser= await existEmail(correoUsuario);
 
         if(!existEmailUser){
@@ -20,14 +20,14 @@ const addSeller = async(req,res)=>{
             const idUsuarioVendedor = resultSeller.insertId;
 
     
-            const seller ={nombreVendedor,calificacionVendedor,horarioLunesVendedor, horarioMartesVendedor, horarioMiércolesVendedor,
-                horarioJuevesVendedor, horarioViernesVendedor, horarioSábadoVendedor, horarioDomingoVendedor, idUsuarioVendedor}
+            const seller ={nombreVendedor,calificacionVendedor,horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+                horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,idTianguisVendedor , fechaNacimientoVendedor,idUsuarioVendedor}
 
             const result = await connection.query(SPI_usuarioRegisterSeller,seller);
-            res.json(result);
+            res.json({message: "Usuario registrado con exito" });
         
         }else{
-            res.json({ message: "Usuario ya registrado" });
+            res.json({ message: "El correo se encuentra en uso" });
             return res.status(409);
         }
        
@@ -49,3 +49,5 @@ const encrypt = async (password) => {
 export const methods = {
     addSeller
 };
+
+
