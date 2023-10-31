@@ -1,15 +1,36 @@
 const bcrypt = require('bcryptjs')
-const {getConnection} = require("../Datebase/dbConfig.js")
+import { getConnection } from "../Datebase/dbConfig.js";
+const { existEmail } = require("../Helpers/validateUsers.js")
+import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
+
+
 const addSeller = async(req,res)=>{
     try{
-        const {nombreVendedor, correoVendedor, fechaNacimientoVendedor, contraseniaVendedor} = req.body;
-        const passwordHashed = await encrypt(contraseniaVendedor);
-        const seller = {nombreVendedor, correoVendedor, fechaNacimientoVendedor, contraseniaVendedor:passwordHashed}
+        const {correoUsuario, contraseniaUsuario, nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+            horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,fechaNacimientoVendedor,idTianguisVendedor} = req.body;
+        const existEmailUser= await existEmail(correoUsuario);
 
-        const connection = await getConnection();
-        const result = await connection.query("INSERT INTO vendedor SET ?", seller);
+        if(!existEmailUser){
+            const passwordHashed = await encrypt(contraseniaUsuario);
+            const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
 
-        res.json(result);
+            const connection = await getConnection();
+
+            const [resultSeller] = await connection.query(SPI_usuario, usuario);
+            const idUsuarioVendedor = resultSeller.insertId;
+
+    
+            const seller ={nombreVendedor,calificacionVendedor,horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+                horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,idTianguisVendedor , fechaNacimientoVendedor,idUsuarioVendedor}
+
+            const result = await connection.query(SPI_usuarioRegisterSeller,seller);
+            res.json({message: "Usuario registrado con exito" });
+        
+        }else{
+            res.json({ message: "El correo se encuentra en uso" });
+            return res.status(409);
+        }
+       
     }catch(error){
         res.status(500);
         res.send(error.message);
@@ -24,6 +45,9 @@ const encrypt = async (password) => {
     return hash;
 }
 
-module.exports = {
+
+export const methods = {
     addSeller
 };
+
+

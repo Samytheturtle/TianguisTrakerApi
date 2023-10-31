@@ -1,8 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
 
-const sellerController = require("../Controllers/seller.js");
+const router = Router();
 
-router.post("/addSeller",sellerController.addSeller);
+import {methods as seller} from "../Controllers/seller.js";
+
+router.post("/",seller.addSeller);
 
 module.exports = router;
