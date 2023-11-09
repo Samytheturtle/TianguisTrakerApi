@@ -39,6 +39,7 @@ const addSeller = async(req,res)=>{
     
 }
 
+
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
     const hash = await bcrypt.hash(password, saltRounds);
