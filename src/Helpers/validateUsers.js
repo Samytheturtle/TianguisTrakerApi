@@ -38,8 +38,22 @@ const getId = async (emailu) => {
     } catch (error) {        
     }
 }
+const getTianguisId = async (idTianguis)=>{
+    try{
+        let connection = await getConnection();
+        let [result] = await connection.query("SELECT idTianguis FROM tianguis WHERE idTianguis = ?",idTianguis);
+        var data=JSON.parse(JSON.stringify(result));
+
+        if(data[0].idTianguis === idTianguis){
+            return true;
+        }else{
+            return false}
+    } catch (error) {        
+    }
+}
 module.exports = {
     existEmail,
     findOne,
-    getId
+    getId,
+    getTianguisId
 };
