@@ -38,7 +38,7 @@ Tianguis:
 }
 
 {
-  "correoUsuario": "ejemplo@correo.com",
+  "correoUsuario": "ejemplo@correo.com",  
   "contraseniaUsuario": "password123",
   "nombreVendedor": "Juan Pérez",
   "calificacionVendedor": 0,
