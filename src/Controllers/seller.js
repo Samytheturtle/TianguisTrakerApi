@@ -9,17 +9,11 @@ const addSeller = async(req,res)=>{
         const {correoUsuario, contraseniaUsuario, nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
             horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,fechaNacimientoVendedor,idTianguisVendedor} = req.body;
         const existEmailUser= await existEmail(correoUsuario);
-        console.log("caca")
         if(!existEmailUser){
-            console.log("caca")
             const passwordHashed = await encrypt(contraseniaUsuario);
             const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
-            console.log("caca")
             const existTianguisUser =await getTianguisId(idTianguisVendedor);
-            console.log("caca")
-
             if(existTianguisUser){
-                console.log("caca")
                 const connection = await getConnection();
                 const [resultSeller] = await connection.query(SPI_usuario, usuario);
                 const idUsuarioVendedor = resultSeller.insertId;
