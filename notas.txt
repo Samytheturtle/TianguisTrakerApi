@@ -76,3 +76,19 @@ INSERT INTO `databasetianguis`.`tianguis` (
   '7:00 - 12:00',
   '7:00 - 12:00'
 );
+
+Registro de un nuevo anuncio :
+
+http://localhost:3000/api/advertisement/addAdvertisement
+{
+  "estatusAnuncio": "Disponible",
+  "fotoAnuncio": "binarioFoto",
+  "cantidadAnuncio": 2,
+  "precioAnuncio": 20.50,
+  "qrAnuncio": "http://troleado",
+  "nombreAnuncio": "EduardoFurroGod",
+  "idTianguisAnuncio": 1,
+  "idProductoAnuncio": "Este se cambia en la api",
+  "idVendedorAnuncio": 3,
+  "idCategoriaAnuncio": 1
+}
