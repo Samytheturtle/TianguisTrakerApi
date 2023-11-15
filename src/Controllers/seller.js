@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection } from "../Datebase/dbConfig.js";
 const { existEmail,getTianguisId } = require("../Helpers/validateUsers.js")
-import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
+import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller} from "../Procedures/users.js"
 
 
 const addSeller = async(req,res)=>{
@@ -45,6 +45,22 @@ const addSeller = async(req,res)=>{
     
 }
 
+const updateSeller = async(req,res)=>{
+    try{
+        const {idUsuarioVendedor} = req.params;
+        const {nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+            horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,fechaNacimientoVendedor,idTianguisVendedor} = req.body;
+        const connection = await getConnection();
+        const seller ={nombreVendedor,calificacionVendedor,horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+            horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,idTianguisVendedor , fechaNacimientoVendedor}
+        const result = connection.query(SPA_updateSeller,[seller,idUsuarioVendedor]);
+        res.json({message:"Vendedor actualizado"});
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
 
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
@@ -54,7 +70,8 @@ const encrypt = async (password) => {
 
 
 export const methods = {
-    addSeller
+    addSeller,
+    updateSeller
 };
 
 

@@ -9,6 +9,7 @@ const SPS_usuarioID = "SELECT nombre, apellido, email FROM usuario WHERE idUsuar
 const SPD_usuario = "DELETE FROM usuario WHERE idUsuario = ?";
 const SPA_usuario = "UPDATE usuario SET ? WHERE idUsuario = ?";
 const SPA_usuarioPassword = "UPDATE usuario SET ? WHERE idUsuario = ?";
+const SPA_updateSeller = "UPDATE vendedor SET ? WHERE idVendedor = ?";
 
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
     'SPS_usuarioID' : SPS_usuarioID,
     'SPD_usuario' : SPD_usuario,
     'SPA_usuario' : SPA_usuario,
-    'SPA_usuarioPassword' : SPA_usuarioPassword
+    'SPA_usuarioPassword' : SPA_usuarioPassword,
+    'SPA_updateSeller' : SPA_updateSeller
 
 }
