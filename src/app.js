@@ -16,6 +16,8 @@ app.use(express.urlencoded({extended : false}));
 import Routerlogin from "./Routes/login";
 import RouterSeller from "./Routes/seller.js";
 import RouterBuyer from "./Routes/buyer.js";
+import RouterTianguis from "./Routes/tianguis.js";
+import RouterAdvertisement from "./Routes/advertisement.js";
 
 
 
@@ -27,6 +29,8 @@ app.get("/", (req, res) => {
 app.use("/api/access/",Routerlogin);
 app.use("/api/register/Seller",RouterSeller);
 app.use("/api/register/Buyer",RouterBuyer);
+app.use("/api/tianguis",RouterTianguis);
+app.use("/api/advertisement",RouterAdvertisement);
 
 /*app.use(Routerlogin);
 
