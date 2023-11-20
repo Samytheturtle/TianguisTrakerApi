@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection } from "../Datebase/dbConfig.js";
 const { existEmail,getTianguisId } = require("../Helpers/validateUsers.js")
-import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller} from "../Procedures/users.js"
+import {SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller} from "../Procedures/users.js"
 
 
 const addSeller = async(req,res)=>{
@@ -47,13 +47,17 @@ const addSeller = async(req,res)=>{
 
 const updateSeller = async(req,res)=>{
     try{
-        const {idUsuarioVendedor} = req.params;
-        const {nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
+        const {idVendedor} = req.params;
+        const {correoUsuario,contraseniaUsuario,nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
             horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,fechaNacimientoVendedor,idTianguisVendedor} = req.body;
         const connection = await getConnection();
+        const passwordHashed = await encrypt(contraseniaUsuario);
+        const idVen = await connection.query(SPI_getIdUsuarioVendedor,idVendedor);
+        const usuario = {correoUsuario, contraseniaUsuario: passwordHashed};
         const seller ={nombreVendedor,calificacionVendedor,horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
             horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,idTianguisVendedor , fechaNacimientoVendedor}
-        const result = connection.query(SPA_updateSeller,[seller,idUsuarioVendedor]);
+        const result = await connection.query(SPA_updateSeller,[seller,idVendedor]);
+        const updateUsuario = await connection.query(SPA_usuarioPassword,[usuario,idVen[0][0].idUsuarioVendedor]);
         res.json({message:"Vendedor actualizado"});
     }catch(error){
         res.status(500);
