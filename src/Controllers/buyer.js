@@ -43,9 +43,11 @@ const updateBuyer = async(req,res)=>{
         const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
         const vendedor = {nombreComprador, ubicacionComprador, fechaNacimientoComprador}
         const connection = await getConnection();
-        const idCom = connection.query(SPA_getIdUsuarioComprador,idComprador);
-        const result = connection.query(SPA_updateBuyer,vendedor);
-        const result2 = connection.query(SPA_usuarioPassword,[usuario,idCom[0][0]])
+        const idCom = await connection.query(SPA_getIdUsuarioComprador,idComprador);
+        const result = await connection.query(SPA_updateBuyer,[vendedor,idComprador]);
+        const result2 = await connection.query(SPA_usuarioPassword,[usuario,idCom[0][0].idUsuarioComprador]);
+
+        res.json("Comprador actualizado");
 
     }catch(error){
         res.status(500);
@@ -61,5 +63,6 @@ const encrypt = async (password) => {
 
 
 export const methods = {
-    addBuyer
+    addBuyer,
+    updateBuyer
 };
