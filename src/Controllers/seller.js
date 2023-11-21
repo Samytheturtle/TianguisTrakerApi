@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection } from "../Datebase/dbConfig.js";
 const { existEmail,getTianguisId } = require("../Helpers/validateUsers.js")
-import {SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller} from "../Procedures/users.js"
+import {SPI_getUsuario,SPA_getUsuarioVendedor,SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller, SPI_getVendedor} from "../Procedures/users.js"
 
 
 const addSeller = async(req,res)=>{
@@ -18,7 +18,7 @@ const addSeller = async(req,res)=>{
                 const [resultSeller] = await connection.query(SPI_usuario, usuario);
                 const idUsuarioVendedor = resultSeller.insertId;
 
-        
+
                 const seller ={nombreVendedor,calificacionVendedor,horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
                     horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,idTianguisVendedor , fechaNacimientoVendedor,idUsuarioVendedor}
     
@@ -65,6 +65,34 @@ const updateSeller = async(req,res)=>{
     }
 }
 
+const getSeller = async(req,res)=>{
+    try{
+        const {idVendedor} = req.params;
+        const connection = await getConnection();
+        const [result] = await connection.query(SPI_getIdUsuarioVendedor,idVendedor);
+        const [correo] = await connection.query(SPI_getUsuario,result[0].idUsuarioVendedor)
+        const [vendedor] = await connection.query(SPI_getVendedor,idVendedor);
+        const sellerInfo = {
+            correo: correo[0].correoUsuario,
+            nombreVendedor: vendedor[0].nombreVendedor,
+            calificacionVendedor: vendedor[0].calificacionVendedor,
+            horarioLunesVendedor: vendedor[0].horarioLunesVendedor,
+            horarioMartesVendedor: vendedor[0].horarioMartesVendedor,
+            horarioMiercolesVendedor: vendedor[0].horarioMiercolesVendedor,
+            horarioJuevesVendedor: vendedor[0].horarioJuevesVendedor,
+            horarioViernesVendedor: vendedor[0].horarioViernesVendedor,
+            horarioSabadoVendedor: vendedor[0].horarioSabadoVendedor,
+            horarioDomingoVendedor: vendedor[0].horarioDomingoVendedor,
+            idTianguisVendedor: vendedor[0].idTianguisVendedor,
+            fechaNacimientoVendedor: vendedor[0].fechaNacimientoVendedor,
+        };
+        res.json(sellerInfo);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
 
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
@@ -75,7 +103,8 @@ const encrypt = async (password) => {
 
 export const methods = {
     addSeller,
-    updateSeller
+    updateSeller,
+    getSeller
 };
 
 

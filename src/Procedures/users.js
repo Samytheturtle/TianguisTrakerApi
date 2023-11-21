@@ -1,8 +1,10 @@
 const SPI_usuarioRegisterBuyer = "INSERT INTO comprador SET ?";
 const SPI_usuarioRegisterSeller = "INSERT INTO vendedor  SET ?";
 const SPI_getUsuarioVendedor = "SELECT * FROM usuarios WHERE idUsuarios = ?";
+const SPI_getUsuario = "SELECT correoUsuario FROM usuarios WHERE idUsuarios = ?";
 const SPI_getIdUsuarioVendedor = "SELECT idUsuarioVendedor FROM vendedor WHERE idVendedor = ?";
 const SPI_getIdUsuarioComprador = "SELECT idUsuarioComprador FROM comprador WHERE idComprador = ?";
+const SPI_getVendedor = "SELECT * FROM vendedor WHERE idVendedor = ?";
 
 
 const SPI_usuario = "INSERT INTO usuarios SET ?"
@@ -29,6 +31,8 @@ module.exports = {
     'SPA_getUsuarioVendedor': SPI_getUsuarioVendedor,
     'SPI_getIdUsuarioVendedor': SPI_getIdUsuarioVendedor,
     'SPA_getIdUsuarioComprador': SPI_getIdUsuarioComprador,
-    'SPA_updateBuyer' : SPA_updateBuyer
+    'SPA_updateBuyer' : SPA_updateBuyer,
+    'SPI_getUsuario': SPI_getUsuario,
+    'SPI_getVendedor' : SPI_getVendedor
 
 }
