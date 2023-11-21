@@ -27,8 +27,8 @@ app.get("/", (req, res) => {
 }); 
 
 app.use("/api/access/",Routerlogin);
-app.use("/api/register/Seller",RouterSeller);
-app.use("/api/register/Buyer",RouterBuyer);
+app.use("/api/Seller",RouterSeller);
+app.use("/api/Buyer",RouterBuyer);
 app.use("/api/tianguis",RouterTianguis);
 app.use("/api/advertisement",RouterAdvertisement);
 

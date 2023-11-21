@@ -4,6 +4,7 @@ const router = Router();
 
 import {methods as buyer} from "../Controllers/buyer.js";
 
-router.post("/",buyer.addBuyer);
+router.post("/registerBuyer",buyer.addBuyer);
+router.put("/updateBuyer/:idComprador",buyer.updateBuyer);
 
 module.exports = router;

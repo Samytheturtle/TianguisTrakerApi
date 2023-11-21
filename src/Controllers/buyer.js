@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection } from "../Datebase/dbConfig.js";
 const { existEmail } = require("../Helpers/validateUsers.js")
-import { SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
+import {SPA_updateBuyer,SPA_getIdUsuarioComprador, SPA_usuarioPassword, SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
 
 
 const addBuyer = async(req,res)=>{
@@ -35,6 +35,26 @@ const addBuyer = async(req,res)=>{
     
 }
 
+const updateBuyer = async(req,res)=>{
+    try{
+        const {idComprador} = req.params;
+        const {correoUsuario, contraseniaUsuario, nombreComprador, ubicacionComprador, fechaNacimientoComprador} = req.body;
+        const passwordHashed = await encrypt(contraseniaUsuario);
+        const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
+        const vendedor = {nombreComprador, ubicacionComprador, fechaNacimientoComprador}
+        const connection = await getConnection();
+        const idCom = await connection.query(SPA_getIdUsuarioComprador,idComprador);
+        const result = await connection.query(SPA_updateBuyer,[vendedor,idComprador]);
+        const result2 = await connection.query(SPA_usuarioPassword,[usuario,idCom[0][0].idUsuarioComprador]);
+
+        res.json("Comprador actualizado");
+
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
     const hash = await bcrypt.hash(password, saltRounds);
@@ -43,5 +63,6 @@ const encrypt = async (password) => {
 
 
 export const methods = {
-    addBuyer
+    addBuyer,
+    updateBuyer
 };
