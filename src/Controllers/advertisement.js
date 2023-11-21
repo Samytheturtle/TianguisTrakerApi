@@ -1,5 +1,5 @@
 import { getConnection } from "../Datebase/dbConfig.js";
-import {SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
+import {SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
 const addAdvertisement = async(req,res)=>{
 
@@ -101,11 +101,25 @@ const getAdvertisementByTianguis = async(req,res)=>{
     }
 }
 
+const getAdvertisementByCategory = async(req,res)=>{
+    try{
+        const {idCategoriaAnuncio} = req.params;
+        const connection = await getConnection();
+        const [result] = await connection.query(SPI_getAdvertisementByCategory,idCategoriaAnuncio);
+        res.json(result);
+
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
 export const methods = {
     addAdvertisement,
     addFavoriteProduct,
     getAdvertisementId,
     addAdvertisementPulledApart,
     updateAdvertisementSelled,
-    getAdvertisementByTianguis
+    getAdvertisementByTianguis,
+    getAdvertisementByCategory
 };
