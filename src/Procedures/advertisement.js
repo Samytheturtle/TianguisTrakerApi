@@ -9,6 +9,7 @@ const SPI_UpdateStatusProduct = "UPDATE producto SET estadoProducto = 'Apartado'
 const SPI_GetIdProdcut = "SELECT idProductoAnuncio FROM anuncio WHERE idAnuncio = ?";
 const SPI_AdvertisementSelled = "UPDATE anuncio SET estatusAnuncio = 'Vendido' WHERE idAnuncio = ?";
 const SPI_UpdateProductSelled = "UPDATE producto SET estadoProducto = 'Vendido' WHERE idProducto = ?";
+const SPI_GetAdvertisementByTianguis = "SELECT estatusAnuncio,fotoAnuncio,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idProductoAnuncio,idVendedorAnuncio,idCategoriaAnuncio FROM anuncio WHERE idTianguisAnuncio = ?";
 
 
 module.exports = {
@@ -22,5 +23,6 @@ module.exports = {
     'SPI_UpdateStatusProduct': SPI_UpdateStatusProduct,
     'SPI_getIdProduct': SPI_GetIdProdcut,
     'SPI_updateProcutSelled': SPI_UpdateProductSelled,
-    'SPI_advertisementSelled': SPI_AdvertisementSelled
+    'SPI_advertisementSelled': SPI_AdvertisementSelled,
+    'SPI_getAvertisementByTianguis' : SPI_GetAdvertisementByTianguis
 }
