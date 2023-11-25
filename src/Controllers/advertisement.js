@@ -1,5 +1,5 @@
 import { getConnection } from "../Datebase/dbConfig.js";
-import {SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
+import {SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
 const addAdvertisement = async(req,res)=>{
 
@@ -114,6 +114,18 @@ const getAdvertisementByCategory = async(req,res)=>{
     }
 }
 
+const getAdvertisementPulledApart = async(req,res)=>{
+    try{
+        const {idComprador} = req.params;
+        const connection = await getConnection();
+        const [result] = await connection.query(SPI_getAdvertisementPulledApart,idComprador);
+        res.json(result);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
 export const methods = {
     addAdvertisement,
     addFavoriteProduct,
@@ -121,5 +133,6 @@ export const methods = {
     addAdvertisementPulledApart,
     updateAdvertisementSelled,
     getAdvertisementByTianguis,
-    getAdvertisementByCategory
+    getAdvertisementByCategory,
+    getAdvertisementPulledApart
 };
