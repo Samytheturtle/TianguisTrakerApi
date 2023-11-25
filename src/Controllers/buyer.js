@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection } from "../Datebase/dbConfig.js";
 const { existEmail } = require("../Helpers/validateUsers.js")
-import {SPA_updateBuyer,SPA_getIdUsuarioComprador, SPA_usuarioPassword, SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
+import {SPI_addReview,SPA_updateBuyer,SPA_getIdUsuarioComprador, SPA_usuarioPassword, SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
 
 
 const addBuyer = async(req,res)=>{
@@ -55,6 +55,19 @@ const updateBuyer = async(req,res)=>{
     }
 }
 
+const addReview = async(req,res)=>{
+    try{
+        const {calificacionResenia,mensajeResenia,idVendedorResenia,idProductoResenia} = req.body;
+        const review = {calificacionResenia,mensajeResenia,idVendedorResenia,idProductoResenia};
+        const connection = await getConnection();
+        const result = connection.query(SPI_addReview,review);
+        res.json("Reseña registrada");
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
     const hash = await bcrypt.hash(password, saltRounds);
@@ -64,5 +77,6 @@ const encrypt = async (password) => {
 
 export const methods = {
     addBuyer,
-    updateBuyer
+    updateBuyer,
+    addReview
 };

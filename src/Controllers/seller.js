@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection } from "../Datebase/dbConfig.js";
 const { existEmail,getTianguisId } = require("../Helpers/validateUsers.js")
-import {SPI_getUsuario,SPA_getUsuarioVendedor,SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller, SPI_getVendedor} from "../Procedures/users.js"
+import {SPI_getReview,SPI_getUsuario,SPA_getUsuarioVendedor,SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller, SPI_getVendedor} from "../Procedures/users.js"
 
 
 const addSeller = async(req,res)=>{
@@ -93,6 +93,21 @@ const getSeller = async(req,res)=>{
     }
 }
 
+const getReview = async(req,res)=>{
+    try{
+        const {idVendedor} = req.params;
+        const connection = await getConnection();
+        const [result] = await connection.query(SPI_getReview,idVendedor);
+        console.log(result);
+        res.json(result);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
+
+
+
 
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
@@ -104,7 +119,8 @@ const encrypt = async (password) => {
 export const methods = {
     addSeller,
     updateSeller,
-    getSeller
+    getSeller,
+    getReview
 };
 
 
