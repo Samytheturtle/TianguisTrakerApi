@@ -12,5 +12,6 @@ router.post("/addPulletApartAdvertisement",Advertisement.addAdvertisementPulledA
 router.put("/updateAdvertisementSelled",Advertisement.updateAdvertisementSelled);
 router.get("/getAdvertisementTianguis/:idTianguisAnuncio",Advertisement.getAdvertisementByTianguis);
 router.get("/getAdvertisementCategory/:idCategoriaAnuncio",Advertisement.getAdvertisementByCategory);
+router.get("/getAdvertisementBuyer/:idComprador",Advertisement.getAdvertisementPulledApart);
 
 module.exports = router;
