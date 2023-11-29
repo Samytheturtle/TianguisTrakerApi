@@ -1,4 +1,4 @@
-import { getConnection } from "../Datebase/dbConfig.js";
+import { getConnection,closeConnection } from "../Datebase/dbConfig.js";
 import { SPI_RecuperarHorarioTianguis} from "../Procedures/tianguis.js"
 
 const getHorarioTianguis = async(req,res)=>{
@@ -6,7 +6,7 @@ const getHorarioTianguis = async(req,res)=>{
         const connection = await getConnection();
         const [resultTianguis] = await connection.query(SPI_RecuperarHorarioTianguis);
         res.json(resultTianguis)
-
+        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
