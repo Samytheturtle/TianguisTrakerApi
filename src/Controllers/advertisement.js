@@ -1,29 +1,61 @@
+import { version } from "bluebird";
 import { closeConnection,getConnection } from "../Datebase/dbConfig.js";
+const { google } = require('googleapis');
+import {auth} from "../Helpers/image.js";
+const { Readable } = require('stream');
 import {SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
+
+const bufferToStream = (buffer) => {
+    const readable = new Readable();
+    readable._read = () => {};
+    readable.push(buffer);
+    readable.push(null);
+    return readable;
+  };
+
 const addAdvertisement = async(req,res)=>{
-
-    try{
-        const {estatusAnuncio,fotoAnuncio,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio,idProductoAnuncio
-        ,idVendedorAnuncio,idCategoriaAnuncio}=req.body;
-        const estadoProducto = estatusAnuncio;
-        const nombreProducto = nombreAnuncio;
-        const producto = {estadoProducto, nombreProducto}
-        const connection = await getConnection();
-        const result = await connection.query(SPI_registerProduct,producto);
-        const resultProducto = await connection.query(SPI_getNameProduct,nombreAnuncio);
-        const idProducto = resultProducto[0][0].idProducto;
-        const anuncio = {estatusAnuncio,fotoAnuncio,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio,idProductoAnuncio: idProducto
-            ,idVendedorAnuncio,idCategoriaAnuncio};
-
-        const resultAnuncio = await connection.query(SPI_registerAdvertisement,anuncio);
-
-        res.json({ message: "Anuncio Registrado con exito"});
-        closeConnection(connection);
-        
-    }catch(error){
-        res.status(500);
-        res.send(error.message);
+    if (!req.file || !req.file.buffer) {
+        res.send("No hay imagen");
+    }else{
+        try{
+            const bufferStream = bufferToStream(req.file.buffer);
+            const drive = google.drive({ version: 'v3', auth });
+            const {estatusAnuncio,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio
+            ,idVendedorAnuncio,idCategoriaAnuncio}=req.body;
+            console.log(req.file);
+            const response = await drive.files.create({
+                requestBody: {
+                    name: 'uploaded_image.jpg',
+                    
+                },
+                media: {
+                    mimeType: 'image/jpeg',
+                    body: bufferStream,
+                },
+            });
+            console.log("Si llega");
+            const imageUrl = `https://drive.google.com/uc?id=${response.data.id}`;
+            const estadoProducto = estatusAnuncio;
+            const nombreProducto = nombreAnuncio;
+            const producto = {estadoProducto, nombreProducto}
+            const connection = await getConnection();
+            const result = await connection.query(SPI_registerProduct,producto);
+            const resultProducto = await connection.query(SPI_getNameProduct,nombreAnuncio);
+            const idProducto = resultProducto[0][0].idProducto;
+            const anuncio = {estatusAnuncio,fotoAnuncio: imageUrl,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio,idProductoAnuncio: idProducto
+                ,idVendedorAnuncio,idCategoriaAnuncio};
+    
+            const resultAnuncio = await connection.query(SPI_registerAdvertisement,anuncio);
+    
+            res.json({ message: "Anuncio Registrado con exito"});
+            closeConnection(connection);
+            
+        }catch(error){
+            res.status(500);
+            res.send(error.message);
+            console.log(error);
+        }
     }
 }
 
