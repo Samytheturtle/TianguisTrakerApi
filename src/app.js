@@ -2,12 +2,13 @@ import express from "express";
 import morgan from "morgan"
 
 const app = express();
-
+const cors = require('cors');
 //Settings
 app.set("port",3000);
 
 
 //Middlewares
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended : false}));

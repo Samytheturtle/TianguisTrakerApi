@@ -3,6 +3,8 @@ import { closeConnection,getConnection } from "../Datebase/dbConfig.js";
 const { google } = require('googleapis');
 import {auth} from "../Helpers/image.js";
 const { Readable } = require('stream');
+const axios = require('axios');
+const fs = require('fs');
 import {SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
 
@@ -34,8 +36,13 @@ const addAdvertisement = async(req,res)=>{
                     body: bufferStream,
                 },
             });
+            const fileDetails = await drive.files.get({
+                fileId: response.data.id,
+                fields: 'webContentLink',
+            });
+            const fileWebContentLink = fileDetails.data.webContentLink;
             console.log("Si llega");
-            const imageUrl = `https://drive.google.com/uc?id=${response.data.id}`;
+            const imageUrl = response.data.id;
             const estadoProducto = estatusAnuncio;
             const nombreProducto = nombreAnuncio;
             const producto = {estadoProducto, nombreProducto}
@@ -119,18 +126,40 @@ const updateAdvertisementSelled = async(req,res)=>{
     }
 }
 
-const getAdvertisementByTianguis = async(req,res)=>{
-    try{
-        const {idTianguisAnuncio} = req.params;
+const getAdvertisementByTianguis = async (req, res) => {
+    try {
+        const { idTianguisAnuncio } = req.params;
         const connection = await getConnection();
-        const [result] = await connection.query(SPI_getAvertisementByTianguis,idTianguisAnuncio);
-        res.json(result);
+
+        // Obtener datos de la base de datos
+        const [results] = await connection.query(SPI_getAvertisementByTianguis, idTianguisAnuncio);
+
+        // Obtener imágenes de Google Drive para cada resultado
+        const drive = google.drive({ version: 'v3', auth });
+
+        const responseData = await Promise.all(results.map(async (result) => {
+            const imageResponse = await drive.files.get({
+                fileId: result.fotoAnuncio,
+                alt: 'media',
+            }, { responseType: 'arraybuffer' });
+
+            return {
+                datos: result,
+                imagen: Buffer.from(imageResponse.data).toString('base64'),
+            };
+        }));
+
+        // Configurar encabezados y enviar respuesta como JSON
+        res.setHeader('Content-Type', 'application/json');
+        res.json(responseData);
+
         closeConnection(connection);
-    }catch(error){
-        res.status(500);
-        res.send(error.message);
+    } catch (error) {
+        res.status(500).send(error.message);
+        console.error(error);
     }
-}
+};
+
 
 const getAdvertisementByCategory = async(req,res)=>{
     try{
