@@ -10,3 +10,4 @@ router.get("/getSeller/:idVendedor",seller.getSeller);
 router.get("/getReview/:idVendedor",seller.getReview);
 
 module.exports = router;
+

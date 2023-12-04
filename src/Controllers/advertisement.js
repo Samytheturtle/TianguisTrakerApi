@@ -80,18 +80,6 @@ const addFavoriteProduct = async(req,res)=>{
     }
 }
 
-const getAdvertisementId = async(req,res)=>{
-    try{
-        const {idAnuncioFav} = req.params;
-        const connection = await getConnection();
-        const [result] = await connection.query(SPI_getAdvertisementById,idAnuncioFav);
-        res.json(result[0]);
-        closeConnection(connection);
-    }catch(error){
-        res.status(500);
-        res.send(error.message);
-    }
-}
 
 const addAdvertisementPulledApart = async(req,res)=>{
     try{
@@ -126,33 +114,49 @@ const updateAdvertisementSelled = async(req,res)=>{
     }
 }
 
-const getAdvertisementByTianguis = async (req, res) => {
-    try {
-        const { idTianguisAnuncio } = req.params;
+const getAdvertisementId = async(req,res)=>{
+    try{
+        const {idAnuncioFav} = req.params;
         const connection = await getConnection();
-
-        // Obtener datos de la base de datos
-        const [results] = await connection.query(SPI_getAvertisementByTianguis, idTianguisAnuncio);
-
-        // Obtener imágenes de Google Drive para cada resultado
+        const [result] = await connection.query(SPI_getAdvertisementById,idAnuncioFav);
         const drive = google.drive({ version: 'v3', auth });
-
-        const responseData = await Promise.all(results.map(async (result) => {
+        const responseData = await Promise.all(result.map(async (result) => {
             const imageResponse = await drive.files.get({
                 fileId: result.fotoAnuncio,
                 alt: 'media',
             }, { responseType: 'arraybuffer' });
-
             return {
                 datos: result,
                 imagen: Buffer.from(imageResponse.data).toString('base64'),
             };
         }));
-
-        // Configurar encabezados y enviar respuesta como JSON
         res.setHeader('Content-Type', 'application/json');
         res.json(responseData);
+        closeConnection(connection);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }
+}
 
+const getAdvertisementByTianguis = async (req, res) => {
+    try {
+        const { idTianguisAnuncio } = req.params;
+        const connection = await getConnection();
+        const [results] = await connection.query(SPI_getAvertisementByTianguis, idTianguisAnuncio);
+        const drive = google.drive({ version: 'v3', auth });
+        const responseData = await Promise.all(results.map(async (result) => {
+            const imageResponse = await drive.files.get({
+                fileId: result.fotoAnuncio,
+                alt: 'media',
+            }, { responseType: 'arraybuffer' });
+            return {
+                datos: result,
+                imagen: Buffer.from(imageResponse.data).toString('base64'),
+            };
+        }));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(responseData);
         closeConnection(connection);
     } catch (error) {
         res.status(500).send(error.message);
@@ -165,8 +169,20 @@ const getAdvertisementByCategory = async(req,res)=>{
     try{
         const {idCategoriaAnuncio} = req.params;
         const connection = await getConnection();
-        const [result] = await connection.query(SPI_getAdvertisementByCategory,idCategoriaAnuncio);
-        res.json(result);
+        const [results] = await connection.query(SPI_getAdvertisementByCategory,idCategoriaAnuncio);
+        const drive = google.drive({ version: 'v3', auth });
+        const responseData = await Promise.all(results.map(async (result) => {
+            const imageResponse = await drive.files.get({
+                fileId: result.fotoAnuncio,
+                alt: 'media',
+            }, { responseType: 'arraybuffer' });
+            return {
+                datos: result,
+                imagen: Buffer.from(imageResponse.data).toString('base64'),
+            };
+        }));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(responseData);
         closeConnection(connection);
     }catch(error){
         res.status(500);
@@ -179,8 +195,20 @@ const getAdvertisementPulledApart = async(req,res)=>{
     try{
         const {idComprador} = req.params;
         const connection = await getConnection();
-        const [result] = await connection.query(SPI_getAdvertisementPulledApart,idComprador);
-        res.json(result);
+        const [results] = await connection.query(SPI_getAdvertisementPulledApart,idComprador);
+        const drive = google.drive({ version: 'v3', auth });
+        const responseData = await Promise.all(results.map(async (result) => {
+            const imageResponse = await drive.files.get({
+                fileId: result.fotoAnuncio,
+                alt: 'media',
+            }, { responseType: 'arraybuffer' });
+            return {
+                datos: result,
+                imagen: Buffer.from(imageResponse.data).toString('base64'),
+            };
+        }));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(responseData);
         closeConnection(connection);
     }catch(error){
         closeConnection(connection);
