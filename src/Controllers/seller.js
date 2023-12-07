@@ -1,11 +1,13 @@
 const bcrypt = require('bcryptjs')
-import { getConnection } from "../Datebase/dbConfig.js";
+import { getConnection,closeConnection } from "../Datebase/dbConfig.js";
 const { existEmail,getTianguisId } = require("../Helpers/validateUsers.js")
 import {SPI_getReview,SPI_getUsuario,SPA_getUsuarioVendedor,SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller, SPI_getVendedor} from "../Procedures/users.js"
 
 
 const addSeller = async(req,res)=>{
+    
     try{
+        const connection = await getConnection();
         const {correoUsuario, contraseniaUsuario, nombreVendedor, calificacionVendedor, horarioLunesVendedor, horarioMartesVendedor, horarioMiercolesVendedor,
             horarioJuevesVendedor, horarioViernesVendedor, horarioSabadoVendedor, horarioDomingoVendedor,fechaNacimientoVendedor,idTianguisVendedor} = req.body;
         const existEmailUser= await existEmail(correoUsuario);
@@ -14,7 +16,7 @@ const addSeller = async(req,res)=>{
             const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
             const existTianguisUser =await getTianguisId(idTianguisVendedor);
             if(existTianguisUser){
-                const connection = await getConnection();
+                
                 const [resultSeller] = await connection.query(SPI_usuario, usuario);
                 const idUsuarioVendedor = resultSeller.insertId;
 
@@ -25,12 +27,11 @@ const addSeller = async(req,res)=>{
                 const result = await connection.query(SPI_usuarioRegisterSeller,seller);
                 console.log("19")
                 res.json({message: "Usuario registrado con exito" });
+                closeConnection(connection);
             }else{
                 res.json({ message: "El tianguis indicado no fue encontrado" });
                 return res.status(409);
             }
-
-
         
         }else{
             res.json({ message: "El correo se encuentra en uso" });
@@ -59,6 +60,7 @@ const updateSeller = async(req,res)=>{
         const result = await connection.query(SPA_updateSeller,[seller,idVendedor]);
         const updateUsuario = await connection.query(SPA_usuarioPassword,[usuario,idVen[0][0].idUsuarioVendedor]);
         res.json({message:"Vendedor actualizado"});
+        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
@@ -87,6 +89,7 @@ const getSeller = async(req,res)=>{
             fechaNacimientoVendedor: vendedor[0].fechaNacimientoVendedor,
         };
         res.json(sellerInfo);
+        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
@@ -98,8 +101,8 @@ const getReview = async(req,res)=>{
         const {idVendedor} = req.params;
         const connection = await getConnection();
         const [result] = await connection.query(SPI_getReview,idVendedor);
-        console.log(result);
         res.json(result);
+        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);

@@ -14,6 +14,12 @@ const getConnection = async () => {
     return connection;
 };
 
+const closeConnection = (connection) => {
+    connection.release(); // Liberar la conexión para devolverla al pool
+    console.log("Conexión cerrada");
+};
+
 module.exports = {
-    getConnection
+    getConnection,
+    closeConnection
 };

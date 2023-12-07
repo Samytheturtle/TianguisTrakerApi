@@ -1,10 +1,11 @@
 const bcrypt = require('bcryptjs')
-import { getConnection } from "../Datebase/dbConfig.js";
+import {closeConnection, getConnection } from "../Datebase/dbConfig.js";
 const { existEmail } = require("../Helpers/validateUsers.js")
 import {SPI_addReview,SPA_updateBuyer,SPA_getIdUsuarioComprador, SPA_usuarioPassword, SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
 
 
 const addBuyer = async(req,res)=>{
+    const connection = await getConnection();
     try{
         const {correoUsuario, contraseniaUsuario, nombreComprador, ubicacionComprador, fechaNacimientoComprador} = req.body;
         const existEmailUser= await existEmail(correoUsuario);
@@ -13,7 +14,7 @@ const addBuyer = async(req,res)=>{
             const passwordHashed = await encrypt(contraseniaUsuario);
             const usuario = {correoUsuario, contraseniaUsuario:passwordHashed};
 
-            const connection = await getConnection();
+            
 
             const [resultBuyer] = await connection.query(SPI_usuario, usuario);
             const idUsuarioComprador = resultBuyer.insertId;
@@ -22,12 +23,14 @@ const addBuyer = async(req,res)=>{
             const buyer ={nombreComprador,ubicacionComprador,fechaNacimientoComprador,idUsuarioComprador}
             const result = await connection.query(SPI_usuarioRegisterBuyer,buyer);
             res.json({message: "Usuario registrado con exito" });
+            closeConnection(connection);
         }else{
             res.json({ message: "El correo se encuentra en uso" });
             return res.status(409);
         }
        
     }catch(error){
+        closeConnection(connection);
         res.status(500);
         res.send(error.message);
     }
@@ -48,7 +51,7 @@ const updateBuyer = async(req,res)=>{
         const result2 = await connection.query(SPA_usuarioPassword,[usuario,idCom[0][0].idUsuarioComprador]);
 
         res.json("Comprador actualizado");
-
+        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
@@ -56,13 +59,15 @@ const updateBuyer = async(req,res)=>{
 }
 
 const addReview = async(req,res)=>{
+    const connection = await getConnection();
     try{
         const {calificacionResenia,mensajeResenia,idVendedorResenia,idProductoResenia} = req.body;
         const review = {calificacionResenia,mensajeResenia,idVendedorResenia,idProductoResenia};
-        const connection = await getConnection();
         const result = connection.query(SPI_addReview,review);
         res.json("Reseña registrada");
+        closeConnection(connection);
     }catch(error){
+        closeConnection(connection);
         res.status(500);
         res.send(error.message);
     }
