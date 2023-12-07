@@ -125,10 +125,8 @@ const getAdvertisementId = async(req,res)=>{
                 fileId: result.fotoAnuncio,
                 alt: 'media',
             }, { responseType: 'arraybuffer' });
-            return {
-                datos: result,
-                imagen: Buffer.from(imageResponse.data).toString('base64'),
-            };
+            result.fotoAnuncio = Buffer.from(imageResponse.data).toString('base64');
+            return result;
         }));
         res.setHeader('Content-Type', 'application/json');
         res.json(responseData);
@@ -150,10 +148,8 @@ const getAdvertisementByTianguis = async (req, res) => {
                 fileId: result.fotoAnuncio,
                 alt: 'media',
             }, { responseType: 'arraybuffer' });
-            return {
-                datos: result,
-                imagen: Buffer.from(imageResponse.data).toString('base64'),
-            };
+            result.fotoAnuncio = Buffer.from(imageResponse.data).toString('base64');
+            return result;
         }));
         res.setHeader('Content-Type', 'application/json');
         res.json(responseData);
@@ -163,6 +159,7 @@ const getAdvertisementByTianguis = async (req, res) => {
         console.error(error);
     }
 };
+
 
 
 const getAdvertisementByCategory = async(req,res)=>{
@@ -176,10 +173,8 @@ const getAdvertisementByCategory = async(req,res)=>{
                 fileId: result.fotoAnuncio,
                 alt: 'media',
             }, { responseType: 'arraybuffer' });
-            return {
-                datos: result,
-                imagen: Buffer.from(imageResponse.data).toString('base64'),
-            };
+            result.fotoAnuncio = Buffer.from(imageResponse.data).toString('base64');
+            return result;
         }));
         res.setHeader('Content-Type', 'application/json');
         res.json(responseData);
@@ -202,10 +197,8 @@ const getAdvertisementPulledApart = async(req,res)=>{
                 fileId: result.fotoAnuncio,
                 alt: 'media',
             }, { responseType: 'arraybuffer' });
-            return {
-                datos: result,
-                imagen: Buffer.from(imageResponse.data).toString('base64'),
-            };
+            result.fotoAnuncio = Buffer.from(imageResponse.data).toString('base64');
+            return result;
         }));
         res.setHeader('Content-Type', 'application/json');
         res.json(responseData);
