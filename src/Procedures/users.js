@@ -18,6 +18,7 @@ const SPA_updateSeller = "UPDATE vendedor SET ? WHERE idVendedor = ?";
 const SPA_updateBuyer = "UPDATE comprador SET ? WHERE idComprador = ?";
 const SPI_addReview = "INSERT INTO resenia SET ?";
 const SPI_getReview = "SELECT * FROM resenia WHERE idVendedorResenia = ?";
+const SPI_getUserSeller = "SELECT idUsuarioVendedor FROM vendedor WHERE idUsuarioVendedor = ?";
 
 
 module.exports = {
@@ -37,6 +38,7 @@ module.exports = {
     'SPI_getUsuario': SPI_getUsuario,
     'SPI_getVendedor' : SPI_getVendedor,
     'SPI_addReview' : SPI_addReview,
-    'SPI_getReview' : SPI_getReview
+    'SPI_getReview' : SPI_getReview,
+    'SPI_getUserSeller': SPI_getUserSeller
 
 }
