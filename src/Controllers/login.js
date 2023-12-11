@@ -20,7 +20,8 @@ const loginAuth = async (req,res) => {
                 const accessToken = generateAccessToken(emailUser);
                 const idUser = await getId(correoUsuario);
                 const idSeller = await connection.query(SPI_getUserSeller,idUser);
-                if(idSeller!=null){
+                console.log(idSeller[0][0].idUsuarioVendedor);
+                if(idSeller[0][0].idUsuarioVendedor==idUser){
                     res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idUser, user: "Vendedor"});
                 }else{
                     res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idUser, user: "Comprador"});
