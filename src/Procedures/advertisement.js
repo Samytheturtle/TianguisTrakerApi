@@ -9,6 +9,7 @@ const SPI_UpdateStatusProduct = "UPDATE producto SET estadoProducto = 'Apartado'
 const SPI_GetIdProdcut = "SELECT idProductoAnuncio FROM anuncio WHERE idAnuncio = ?";
 const SPI_AdvertisementSelled = "UPDATE anuncio SET estatusAnuncio = 'Vendido' WHERE idAnuncio = ?";
 const SPI_UpdateProductSelled = "UPDATE producto SET estadoProducto = 'Vendido' WHERE idProducto = ?";
+const SPI_GetAdvertisemenets = "SELECT * FROM anuncio";
 const SPI_GetAdvertisementByTianguis = "SELECT * FROM anuncio WHERE idTianguisAnuncio = ?";
 const SPI_GetAdvertisementByCategory = "SELECT * FROM anuncio WHERE idCategoriaAnuncio = ?";
 const SPI_GETAdvertisementPUlledApart = "SELECT * FROM anuncio JOIN apartado ON idAnuncio = idAnuncioApartado AND idCompradorApartado = ?";
@@ -27,5 +28,6 @@ module.exports = {
     'SPI_advertisementSelled': SPI_AdvertisementSelled,
     'SPI_getAvertisementByTianguis' : SPI_GetAdvertisementByTianguis,
     'SPI_getAdvertisementByCategory':SPI_GetAdvertisementByCategory,
-    'SPI_getAdvertisementPulledApart' : SPI_GETAdvertisementPUlledApart
+    'SPI_getAdvertisementPulledApart' : SPI_GETAdvertisementPUlledApart,
+    'SPI_getAdvertisements': SPI_GetAdvertisemenets
 }
