@@ -15,6 +15,7 @@ router.post("/addPulletApartAdvertisement",validateToken,Advertisement.addAdvert
 router.put("/updateAdvertisementSelled",validateToken,Advertisement.updateAdvertisementSelled);
 router.get("/getAdvertisementTianguis/:idTianguisAnuncio",Advertisement.getAdvertisementByTianguis);
 router.get("/getAdvertisementCategory/:idCategoriaAnuncio",Advertisement.getAdvertisementByCategory);
-router.get("/getAdvertisementBuyer/:idComprador",Advertisement.getAdvertisementPulledApart);
+router.get("/getAdvertisementBuyer/:idComprador",validateToken,Advertisement.getAdvertisementPulledApart);
+router.get("/getAdvertisements",Advertisement.getAdvertisements);
 
 module.exports = router;
