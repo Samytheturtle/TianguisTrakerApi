@@ -25,15 +25,12 @@ const loginAuth = async (req,res) => {
                 }else{
                     res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idUser, user: "Comprador"});
                 }
-                closeConnection(connection);
             }else{
-                closeConnection(connection);
                 res.json({ message: "Contraseña incorrecta" });
                 return res.status(401);
             }
 
         }else{
-            closeConnection(connection);
             res.json({ message: "Correo no encontrado" });
             return res.status(404);
         }
