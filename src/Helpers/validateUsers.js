@@ -1,8 +1,8 @@
-import { getConnection } from "../Datebase/dbConfig.js"
+import { getConnection,closeConnection } from "../Datebase/dbConfig.js"
 
 const existEmail = async (emailu) => {
+    const connection = await getConnection();
     try{
-        let connection = await getConnection();
         let [result] = await connection.query("SELECT correoUsuario FROM usuarios WHERE correoUsuario = ?", emailu);
         var data=JSON.parse(JSON.stringify(result));
 
@@ -12,11 +12,13 @@ const existEmail = async (emailu) => {
             return false;
     }
     }catch(error){
+    }finally{
+        closeConnection(connection);
     }
 };
 const findOne = async (emailu) => {
+    const connection = await getConnection();
     try {
-        let connection = await getConnection();
         let [result] = await connection.query("SELECT contraseniaUsuario FROM usuarios WHERE correoUsuario = ?", emailu);
         var data=JSON.parse(JSON.stringify(result));
         
@@ -24,11 +26,13 @@ const findOne = async (emailu) => {
         const encryp = data[0].contraseniaUsuario;
         return encryp;
     } catch (error) {        
+    }finally{
+        closeConnection(connection);
     }
 }
 const getId = async (emailu) => {
+    const connection = await getConnection();
     try {
-        let connection = await getConnection();
         let [result] = await connection.query("SELECT idUsuarios FROM usuarios WHERE correoUsuario = ?", emailu);
         
         var data=JSON.parse(JSON.stringify(result));
@@ -36,11 +40,13 @@ const getId = async (emailu) => {
         const encryp = data[0].idUsuarios;
         return encryp;
     } catch (error) {        
+    }finally{
+        closeConnection(connection);
     }
 }
 const getTianguisId = async (idTianguis)=>{
+    const connection = await getConnection();
     try{
-        let connection = await getConnection();
         let [result] = await connection.query("SELECT idTianguis FROM tianguis WHERE idTianguis = ?",idTianguis);
         var data=JSON.parse(JSON.stringify(result));
 
@@ -49,6 +55,8 @@ const getTianguisId = async (idTianguis)=>{
         }else{
             return false}
     } catch (error) {        
+    }finally{
+        closeConnection(connection);
     }
 }
 module.exports = {
