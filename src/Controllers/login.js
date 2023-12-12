@@ -3,7 +3,7 @@ import { closeConnection,getConnection } from "../Datebase/dbConfig.js"
 import { compare } from "../Helpers/handleByEncript.js"
 const {existEmail, findOne, getId } = require("../Helpers/validateUsers.js")
 const { generateAccessToken } = require("../Helpers/jwtHelperkey.js")
-const {SPI_getUserSeller} = require("../Procedures/users.js");
+const {SPI_getIDBuyer,SPI_getIDSeller,SPI_getUserSeller} = require("../Procedures/users.js");
 
 const loginAuth = async (req,res) => {
     const connection = await getConnection();
@@ -21,9 +21,11 @@ const loginAuth = async (req,res) => {
                 const idUser = await getId(correoUsuario);
                 const idSeller = await connection.query(SPI_getUserSeller,idUser);
                 if(idSeller[0][0]!=null){
-                    res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idUser, user: "Vendedor"});
+                    const [id] = await connection.query(SPI_getIDSeller,idUser)
+                    res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: id[0].idVendedor, user: "Vendedor"});
                 }else{
-                    res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idUser, user: "Comprador"});
+                    const [idCom] = await connection.query(SPI_getIDBuyer,idUser);
+                    res.header('authorization', accessToken).json({message: "authenticated user", token: accessToken, id: idCom[0].idComprador, user: "Comprador"});
                 }
             }else{
                 res.json({ message: "Contraseña incorrecta" });
