@@ -17,5 +17,8 @@ router.get("/getAdvertisementTianguis/:idTianguisAnuncio",Advertisement.getAdver
 router.get("/getAdvertisementCategory/:idCategoriaAnuncio",Advertisement.getAdvertisementByCategory);
 router.get("/getAdvertisementBuyer/:idComprador",validateToken,Advertisement.getAdvertisementPulledApart);
 router.get("/getAdvertisements",Advertisement.getAdvertisements);
+router.get("/getAdvertisementsPulledApartSeller/:idVendedor",validateToken,Advertisement.getAdvertisementsPulledApartSeller);
+router.put("/updateAdvertisementAvaible/",validateToken,Advertisement.updateProductAvaible);
+router.get("/advertisement/categorys",Advertisement.getCategorys);
 
 module.exports = router;

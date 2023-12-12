@@ -5,7 +5,7 @@ import {auth} from "../Helpers/image.js";
 const { Readable } = require('stream');
 const axios = require('axios');
 const fs = require('fs');
-import {SPI_getAdvertisements,SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
+import {SPI_GetCategorys,SPI_DeletePulledApart,SPI_UpdateAdvertisementAvaible,SPI_UpdateProductAvaible,SPI_getAdvertisements,SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
 
 const bufferToStream = (buffer) => {
@@ -82,9 +82,9 @@ const addFavoriteProduct = async(req,res)=>{
 
 
 const addAdvertisementPulledApart = async(req,res)=>{
+    const connection = await getConnection();
     try{
         const {idAnuncioApartado,idCompradorApartado}= req.body;
-        const connection = await getConnection();
         const pulledApart = {idAnuncioApartado,idCompradorApartado};
         const idAnuncio = idAnuncioApartado;
         const [idProduct] = await connection.query(SPI_getIdProduct,idAnuncio);
@@ -92,14 +92,16 @@ const addAdvertisementPulledApart = async(req,res)=>{
         const apart = await connection.query(SPI_UpdateStatusPulledApart,idAnuncio);
         const producto = await connection.query(SPI_UpdateStatusProduct,idProduct[0].idProductoAnuncio);
         res.json("Producto apartado");
-        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
+    }finally{
+        closeConnection(connection);
     }
 }
 
 const updateAdvertisementSelled = async(req,res)=>{
+    const connection = await getConnection();
     try{
         const {idAnuncio}= req.body;
         const connection = await getConnection();
@@ -107,10 +109,11 @@ const updateAdvertisementSelled = async(req,res)=>{
         const apart = await connection.query(SPI_advertisementSelled,idAnuncio);
         const producto = await connection.query(SPI_updateProcutSelled,idProduct[0].idProductoAnuncio);
         res.json("Producto vendido");
-        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
+    }finally{
+        closeConnection(connection);
     }
 }
 
@@ -189,7 +192,6 @@ const getAdvertisementPulledApart = async(req,res)=>{
     const connection = await getConnection();
     try{
         const {idComprador} = req.params;
-        const connection = await getConnection();
         const [results] = await connection.query(SPI_getAdvertisementPulledApart,idComprador);
         const drive = google.drive({ version: 'v3', auth });
         const responseData = await Promise.all(results.map(async (result) => {
@@ -202,18 +204,17 @@ const getAdvertisementPulledApart = async(req,res)=>{
         }));
         res.setHeader('Content-Type', 'application/json');
         res.json(responseData);
-        closeConnection(connection);
     }catch(error){
-        closeConnection(connection);
         res.status(500);
         res.send(error.message);
+    }finally{
+        closeConnection(connection);
     }
 }
 
 const getAdvertisements = async(req,res)=>{
     const connection = await getConnection();
     try{
-        const connection = await getConnection();
         const [results] = await connection.query(SPI_getAdvertisements);
         const drive = google.drive({ version: 'v3', auth });
         const responseData = await Promise.all(results.map(async (result) => {
@@ -234,7 +235,63 @@ const getAdvertisements = async(req,res)=>{
     }
 }
 
+const getAdvertisementsPulledApartSeller = async(req,res)=>{
+    const connection = await getConnection();
+    try{
+        const {idVendedor} = req.params;
+        const [results] = await connection.query(SPI_getAdvertisements,idVendedor);
+        const drive = google.drive({ version: 'v3', auth });
+        const responseData = await Promise.all(results.map(async (result) => {
+            const imageResponse = await drive.files.get({
+                fileId: result.fotoAnuncio,
+                alt: 'media',
+            }, { responseType: 'arraybuffer' });
+            result.fotoAnuncio = Buffer.from(imageResponse.data).toString('base64');
+            return result;
+        }));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(responseData);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }finally{
+        closeConnection(connection);
+    }
+}
+
+const updateProductAvaible = async(req,res)=>{
+    const connection = await getConnection();
+    try{
+        const {idAnuncio}= req.body;
+        const connection = await getConnection();
+        const [idProduct] = await connection.query(SPI_getIdProduct,idAnuncio);
+        const apart = await connection.query(SPI_UpdateAdvertisementAvaible,idAnuncio);
+        const producto = await connection.query(SPI_UpdateProductAvaible,idProduct[0].idProductoAnuncio);
+        await connection.query(SPI_DeletePulledApart,idAnuncio);
+        res.json("Producto Actualizado a Disponible");
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }finally{
+        closeConnection(connection);
+    }
+}
+
+const getCategorys = async(req,res)=>{
+    const connection = await getConnection();
+    try{
+        const [result] = await connection.query(SPI_GetCategorys);
+        res.json(result);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }finally{
+        closeConnection(connection);
+    }
+}
+
 export const methods = {
+    getCategorys,
     addAdvertisement,
     addFavoriteProduct,
     getAdvertisementId,
@@ -243,5 +300,7 @@ export const methods = {
     getAdvertisementByTianguis,
     getAdvertisementByCategory,
     getAdvertisementPulledApart,
-    getAdvertisements
+    getAdvertisements,
+    getAdvertisementsPulledApartSeller,
+    updateProductAvaible
 };
