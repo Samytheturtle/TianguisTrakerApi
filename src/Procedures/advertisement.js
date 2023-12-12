@@ -13,8 +13,15 @@ const SPI_GetAdvertisemenets = "SELECT * FROM anuncio";
 const SPI_GetAdvertisementByTianguis = "SELECT * FROM anuncio WHERE idTianguisAnuncio = ?";
 const SPI_GetAdvertisementByCategory = "SELECT * FROM anuncio WHERE idCategoriaAnuncio = ?";
 const SPI_GETAdvertisementPUlledApart = "SELECT * FROM anuncio JOIN apartado ON idAnuncio = idAnuncioApartado AND idCompradorApartado = ?";
+const SPI_GetAdvertisemenetPulledApartSeller = "SELECT * FROM anuncio join apartado ON idAnuncioApartado = idAnuncio where idVendedorAnuncio = ? AND estatusAnuncio = 'Apartado';";
+const SPI_UpdateAdvertisementAvaible = "UPDATE anuncio SET estatusAnuncio = 'Disponible' WHERE idAnuncio = ?";
+const SPI_UpdateProductAvaible = "UPDATE producto SET estadoProducto = 'Disponible' WHERE idProducto = ?";
+const SPI_DeletePulledApart = "DELETE FROM apartado WHERE idAnuncioApartado = ?";
+const SPI_GetCategorys = "SELECT * FROM categoria";
 
 module.exports = {
+    'SPI_GetCategorys': SPI_GetCategorys,
+    'SPI_DeletePulledApart': SPI_DeletePulledApart,
     'SPI_registerAdvertisement' : SPI_RegisterAdvertisement,
     'SPI_registerProduct' : SPI_RegisterProduct,
     'SPI_getNameProduct' : SPI_GetNameProduct,
@@ -29,5 +36,8 @@ module.exports = {
     'SPI_getAvertisementByTianguis' : SPI_GetAdvertisementByTianguis,
     'SPI_getAdvertisementByCategory':SPI_GetAdvertisementByCategory,
     'SPI_getAdvertisementPulledApart' : SPI_GETAdvertisementPUlledApart,
-    'SPI_getAdvertisements': SPI_GetAdvertisemenets
+    'SPI_getAdvertisements': SPI_GetAdvertisemenets,
+    'SPI_getAdvertisementsPulledApartSeller' : SPI_GetAdvertisemenetPulledApartSeller,
+    'SPI_UpdateAdvertisementAvaible': SPI_UpdateAdvertisementAvaible,
+    'SPI_UpdateProductAvaible': SPI_UpdateProductAvaible
 }
