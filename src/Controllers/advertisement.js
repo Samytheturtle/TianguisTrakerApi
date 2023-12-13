@@ -5,7 +5,7 @@ import {auth} from "../Helpers/image.js";
 const { Readable } = require('stream');
 const axios = require('axios');
 const fs = require('fs');
-import {SPI_GetCategorys,SPI_DeletePulledApart,SPI_UpdateAdvertisementAvaible,SPI_UpdateProductAvaible,SPI_getAdvertisements,SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
+import {SPI_GetIdAdvertisement,SPI_GetCategorys,SPI_DeletePulledApart,SPI_UpdateAdvertisementAvaible,SPI_UpdateProductAvaible,SPI_getAdvertisements,SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
 
 const bufferToStream = (buffer) => {
@@ -16,15 +16,17 @@ const bufferToStream = (buffer) => {
     return readable;
   };
 
-const addAdvertisement = async(req,res)=>{
+  const addAdvertisement = async(req,res)=>{
+    const connection = await getConnection();
     if (!req.file || !req.file.buffer) {
         res.send("No hay imagen");
     }else{
         try{
             const bufferStream = bufferToStream(req.file.buffer);
             const drive = google.drive({ version: 'v3', auth });
-            const {estatusAnuncio,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio
-            ,idVendedorAnuncio,idCategoriaAnuncio}=req.body;
+            const { adsData } = req.body;
+            const { estatusAnuncio,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio
+                ,idVendedorAnuncio,idCategoriaAnuncio} = JSON.parse(adsData);
             console.log(req.file);
             const response = await drive.files.create({
                 requestBody: {
@@ -46,25 +48,24 @@ const addAdvertisement = async(req,res)=>{
             const estadoProducto = estatusAnuncio;
             const nombreProducto = nombreAnuncio;
             const producto = {estadoProducto, nombreProducto}
-            const connection = await getConnection();
             const result = await connection.query(SPI_registerProduct,producto);
             const resultProducto = await connection.query(SPI_getNameProduct,nombreAnuncio);
             const idProducto = resultProducto[0][0].idProducto;
             const anuncio = {estatusAnuncio,fotoAnuncio: imageUrl,cantidadAnuncio,precioAnuncio,qrAnuncio,nombreAnuncio,idTianguisAnuncio,idProductoAnuncio: idProducto
-                ,idVendedorAnuncio,idCategoriaAnuncio};
-    
-            const resultAnuncio = await connection.query(SPI_registerAdvertisement,anuncio);
-    
-            res.json({ message: "Anuncio Registrado con exito"});
-            closeConnection(connection);
-            
+                ,idVendedorAnuncio,idCategoriaAnuncio};    
+            const resultAnuncio = await connection.query(SPI_registerAdvertisement,anuncio);  
+            const [id] = await connection.query(SPI_GetIdAdvertisement,imageUrl);
+            res.json({ message: "Anuncio Registrado con exito",idAnuncio: id[0].idAnuncio});
         }catch(error){
             res.status(500);
             res.send(error.message);
             console.log(error);
+        }finally{
+            closeConnection(connection);
         }
-    }
+    }
 }
+
 
 const addFavoriteProduct = async(req,res)=>{
     try{
