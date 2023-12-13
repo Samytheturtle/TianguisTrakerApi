@@ -18,8 +18,10 @@ const SPI_UpdateAdvertisementAvaible = "UPDATE anuncio SET estatusAnuncio = 'Dis
 const SPI_UpdateProductAvaible = "UPDATE producto SET estadoProducto = 'Disponible' WHERE idProducto = ?";
 const SPI_DeletePulledApart = "DELETE FROM apartado WHERE idAnuncioApartado = ?";
 const SPI_GetCategorys = "SELECT * FROM categoria";
+const SPI_GetIdAdvertisement = "SELECT idAnuncio from anuncio WHERE fotoAnuncio = ?";
 
 module.exports = {
+    'SPI_GetIdAdvertisement': SPI_GetIdAdvertisement,
     'SPI_GetCategorys': SPI_GetCategorys,
     'SPI_DeletePulledApart': SPI_DeletePulledApart,
     'SPI_registerAdvertisement' : SPI_RegisterAdvertisement,
