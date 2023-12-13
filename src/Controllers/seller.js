@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import { getConnection,closeConnection } from "../Datebase/dbConfig.js";
 const { existEmail,getTianguisId } = require("../Helpers/validateUsers.js")
-import {SPI_getReview,SPI_getUsuario,SPA_getUsuarioVendedor,SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller, SPI_getVendedor} from "../Procedures/users.js"
+import {SPI_GetSellers,SPI_getReview,SPI_getUsuario,SPA_getUsuarioVendedor,SPA_usuarioPassword, SPI_getIdUsuarioVendedor,SPI_usuarioRegisterSeller, SPI_usuario,SPA_updateSeller, SPI_getVendedor} from "../Procedures/users.js"
 
 
 const addSeller = async(req,res)=>{
@@ -97,20 +97,31 @@ const getSeller = async(req,res)=>{
 }
 
 const getReview = async(req,res)=>{
+    const connection = await getConnection();
     try{
         const {idVendedor} = req.params;
-        const connection = await getConnection();
         const [result] = await connection.query(SPI_getReview,idVendedor);
         res.json(result);
-        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
+    }finally{
+        closeConnection(connection);
     }
 }
 
 
+const getSellers = async(req,res)=>{
+    const connection = await getConnection();
+    try{
+        const [result] = await connection.query(SPI_GetSellers);
+        res.json(result);
+    }catch(error){
 
+    }finally{
+        closeConnection(connection);
+    }
+} 
 
 const encrypt = async (password) => {
     const saltRounds = 10; // Número de rondas de encriptación
@@ -120,6 +131,7 @@ const encrypt = async (password) => {
 
 
 export const methods = {
+    getSellers,
     addSeller,
     updateSeller,
     getSeller,
