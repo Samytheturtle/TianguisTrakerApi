@@ -55,7 +55,7 @@ const bufferToStream = (buffer) => {
                 ,idVendedorAnuncio,idCategoriaAnuncio};    
             const resultAnuncio = await connection.query(SPI_registerAdvertisement,anuncio);  
             const [id] = await connection.query(SPI_GetIdAdvertisement,imageUrl);
-            res.json({ message: "Anuncio Registrado con exito",idAnuncio: id[0].idAnuncio});
+            res.json({ message: "Anuncio Registrado con exito",idTianguisAnuncio: id[0].idAnuncio});
         }catch(error){
             res.status(500);
             res.send(error.message);
