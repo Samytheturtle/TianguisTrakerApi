@@ -75,7 +75,7 @@ const getSeller = async(req,res)=>{
         const [correo] = await connection.query(SPI_getUsuario,result[0].idUsuarioVendedor)
         const [vendedor] = await connection.query(SPI_getVendedor,idVendedor);
         const sellerInfo = {
-            correo: correo[0].correoUsuario,
+            correoUsuario: correo[0].correoUsuario,
             nombreVendedor: vendedor[0].nombreVendedor,
             calificacionVendedor: vendedor[0].calificacionVendedor,
             horarioLunesVendedor: vendedor[0].horarioLunesVendedor,
