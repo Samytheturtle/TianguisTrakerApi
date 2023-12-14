@@ -61,8 +61,8 @@ const updateBuyer = async(req,res)=>{
 const addReview = async(req,res)=>{
     const connection = await getConnection();
     try{
-        const {calificacionResenia,mensajeResenia,idVendedorResenia,idProductoResenia} = req.body;
-        const review = {calificacionResenia,mensajeResenia,idVendedorResenia,idProductoResenia};
+        const {calificacionResenia,mensajeResenia,idVendedorResenia} = req.body;
+        const review = {calificacionResenia,mensajeResenia,idVendedorResenia};
         const result = connection.query(SPI_addReview,review);
         res.json("Reseña registrada");
         closeConnection(connection);
