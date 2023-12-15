@@ -13,15 +13,19 @@ const SPI_GetAdvertisemenets = "SELECT * FROM anuncio";
 const SPI_GetAdvertisementByTianguis = "SELECT * FROM anuncio WHERE idTianguisAnuncio = ?";
 const SPI_GetAdvertisementByCategory = "SELECT * FROM anuncio WHERE idCategoriaAnuncio = ?";
 const SPI_GETAdvertisementPUlledApart = "SELECT * FROM anuncio JOIN apartado ON idAnuncio = idAnuncioApartado AND idCompradorApartado = ?";
-const SPI_GetAdvertisemenetPulledApartSeller = "SELECT * FROM anuncio join apartado ON idAnuncioApartado = idAnuncio where idVendedorAnuncio = ? AND estatusAnuncio = 'Apartado';";
+const SPI_GetAdvertisemenetPulledApartSeller = "SELECT * FROM anuncio join apartado ON idAnuncioApartado = idAnuncio WHERE idVendedorAnuncio = ? AND estatusAnuncio = 'Apartado';";
 const SPI_UpdateAdvertisementAvaible = "UPDATE anuncio SET estatusAnuncio = 'Disponible' WHERE idAnuncio = ?";
 const SPI_UpdateProductAvaible = "UPDATE producto SET estadoProducto = 'Disponible' WHERE idProducto = ?";
 const SPI_DeletePulledApart = "DELETE FROM apartado WHERE idAnuncioApartado = ?";
 const SPI_GetCategorys = "SELECT * FROM categoria";
 const SPI_GetIdAdvertisement = "SELECT idAnuncio from anuncio WHERE fotoAnuncio = ?";
 const SPI_GetAdvertisementsBySeller = "SELECT * FROM anuncio WHERE idVendedorAnuncio = ?";
+const SPI_DeleteFavorite = "DELETE FROM anunciosfavoritos WHERE idCompradorFav = ? AND idAnuncioFav = ?";
+const SPI_GetAdvertisementsFavorites = "SELECT idAnuncio, estatusAnuncio, fotoAnuncio, cantidadAnuncio, precioAnuncio, qrAnuncio, nombreAnuncio, idTianguisAnuncio, idProductoAnuncio, idVendedorAnuncio, idCategoriaAnuncio FROM anuncio join anunciosfavoritos ON idAnuncio = idAnuncioFav WHERE idCompradorFav = ?";
 
 module.exports = {
+    'SPI_GetAdvertisemenetFavorites': SPI_GetAdvertisementsFavorites,
+    'SPI_DeleteFavorite': SPI_DeleteFavorite,
     'SPI_GetAdvertisementsBySeller': SPI_GetAdvertisementsBySeller,
     'SPI_GetIdAdvertisement': SPI_GetIdAdvertisement,
     'SPI_GetCategorys': SPI_GetCategorys,

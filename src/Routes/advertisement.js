@@ -21,5 +21,7 @@ router.get("/getAdvertisementsPulledApartSeller/:idVendedor",validateToken,Adver
 router.put("/updateAdvertisementAvaible/",validateToken,Advertisement.updateProductAvaible);
 router.get("/advertisement/categorys",Advertisement.getCategorys);
 router.get("/getAdvertisementBySeller/:idVendedorAnuncio",Advertisement.getAdvertisementBySeller);
+router.delete("/deleteFavoriteAdvertisement/",validateToken,Advertisement.deleteFavoriteAdvertisement);
+router.get("/getFavoritesAdvertisement/:idCompradorFav",validateToken,Advertisement.getAdvertisementsFavorites);
 
 module.exports = router;
