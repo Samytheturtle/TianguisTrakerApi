@@ -22,8 +22,10 @@ const SPI_getUserSeller = "SELECT idUsuarioVendedor FROM vendedor WHERE idUsuari
 const SPI_getIDSeller = "SELECT idVendedor FROM vendedor WHERE idUsuarioVendedor = ?";
 const SPI_getIDBuyer = "SELECT idComprador FROM comprador WHERE idUsuarioComprador = ?";
 const SPI_getSellers = "SELECT idVendedor, nombreVendedor FROM vendedor";
+const SPI_GetBuyerById = "SELECT * FROM comprador WHERE idComprador = ?"
 
 module.exports = {
+    'SPI_GetBuyerById': SPI_GetBuyerById,
     'SPI_GetSellers': SPI_getSellers,
     'SPI_getIDBuyer': SPI_getIDBuyer,
     'SPI_getIDSeller': SPI_getIDSeller,
