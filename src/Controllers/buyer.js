@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 import {closeConnection, getConnection } from "../Datebase/dbConfig.js";
 const { existEmail } = require("../Helpers/validateUsers.js")
-import {SPI_addReview,SPA_updateBuyer,SPA_getIdUsuarioComprador, SPA_usuarioPassword, SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
+import {SPI_getUsuario,SPI_GetBuyerById,SPI_addReview,SPA_updateBuyer,SPA_getIdUsuarioComprador, SPA_usuarioPassword, SPI_usuarioRegisterBuyer,SPI_usuarioRegisterSeller, SPI_usuario} from "../Procedures/users.js"
 
 
 const addBuyer = async(req,res)=>{
@@ -65,11 +65,34 @@ const addReview = async(req,res)=>{
         const review = {calificacionResenia,mensajeResenia,idVendedorResenia};
         const result = connection.query(SPI_addReview,review);
         res.json("Reseña registrada");
-        closeConnection(connection);
-    }catch(error){
-        closeConnection(connection);
+    }catch(error){    
         res.status(500);
         res.send(error.message);
+    }finally{
+        closeConnection(connection);
+    }
+}
+
+const getBuyerById = async(req,res)=>{
+    const connection = await getConnection();
+    try{
+        const {idComprador} = req.params;
+        const [result] = await connection.query(SPA_getIdUsuarioComprador,idComprador);
+        const [correo] = await connection.query(SPI_getUsuario,result[0].idUsuarioComprador);
+        const [buyer] = await connection.query(SPI_GetBuyerById,idComprador);
+        const buyerInfo = {
+            correoUsuario: correo[0].correoUsuario,
+            nombreComprador: buyer[0].nombreComprador,
+            ubicacionComprador: buyer[0].ubicacionComprador,
+            fechaNacimientoComprador: buyer[0].fechaNacimientoComprador,
+            idUsuarioComprador: buyer[0].idUsuarioComprador,
+        };
+        res.json(buyerInfo);
+    }catch(error){
+        res.status(500);
+        res.send(error.message);
+    }finally{
+        closeConnection(connection);
     }
 }
 
@@ -81,6 +104,7 @@ const encrypt = async (password) => {
 
 
 export const methods = {
+    getBuyerById,
     addBuyer,
     updateBuyer,
     addReview

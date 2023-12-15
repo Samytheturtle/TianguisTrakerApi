@@ -68,9 +68,9 @@ const updateSeller = async(req,res)=>{
 }
 
 const getSeller = async(req,res)=>{
+    const connection = await getConnection();
     try{
         const {idVendedor} = req.params;
-        const connection = await getConnection();
         const [result] = await connection.query(SPI_getIdUsuarioVendedor,idVendedor);
         const [correo] = await connection.query(SPI_getUsuario,result[0].idUsuarioVendedor)
         const [vendedor] = await connection.query(SPI_getVendedor,idVendedor);
@@ -89,10 +89,11 @@ const getSeller = async(req,res)=>{
             fechaNacimientoVendedor: vendedor[0].fechaNacimientoVendedor,
         };
         res.json(sellerInfo);
-        closeConnection(connection);
     }catch(error){
         res.status(500);
         res.send(error.message);
+    }finally{
+        closeConnection(connection);
     }
 }
 
