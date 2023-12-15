@@ -5,7 +5,7 @@ import {auth} from "../Helpers/image.js";
 const { Readable } = require('stream');
 const axios = require('axios');
 const fs = require('fs');
-import {SPI_GetIdAdvertisement,SPI_GetCategorys,SPI_DeletePulledApart,SPI_UpdateAdvertisementAvaible,SPI_UpdateProductAvaible,SPI_getAdvertisements,SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
+import {SPI_GetAdvertisementsBySeller,SPI_GetIdAdvertisement,SPI_GetCategorys,SPI_DeletePulledApart,SPI_UpdateAdvertisementAvaible,SPI_UpdateProductAvaible,SPI_getAdvertisements,SPI_getAdvertisementPulledApart,SPI_getAdvertisementByCategory,SPI_getAvertisementByTianguis,SPI_updateProcutSelled,SPI_advertisementSelled,SPI_UpdateStatusProduct,SPI_getIdProduct,SPI_UpdateStatusPulledApart,SPI_addAvertisementPulledApart,SPI_registerAdvertisement,SPI_registerProduct,SPI_getNameProduct,SPI_addFavoriteProduct,SPI_getAdvertisementById} from "../Procedures/advertisement.js";
 
 
 const bufferToStream = (buffer) => {
@@ -291,7 +291,32 @@ const getCategorys = async(req,res)=>{
     }
 }
 
+const getAdvertisementBySeller = async(req,res)=>{
+    const connection = await getConnection();
+    try{
+        const {idVendedorAnuncio} = req.params;
+        const [results] = await connection.query(SPI_GetAdvertisementsBySeller,idVendedorAnuncio);
+        const drive = google.drive({ version: 'v3', auth });
+        const responseData = await Promise.all(results.map(async (result) => {
+            const imageResponse = await drive.files.get({
+                fileId: result.fotoAnuncio,
+                alt: 'media',
+            }, { responseType: 'arraybuffer' });
+            result.fotoAnuncio = Buffer.from(imageResponse.data).toString('base64');
+            return result;
+        }));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(responseData);
+    } catch(error){
+        res.status(500);
+        res.send(error.message);
+    }finally{
+        closeConnection(connection);
+    }
+}
+
 export const methods = {
+    getAdvertisementBySeller,
     getCategorys,
     addAdvertisement,
     addFavoriteProduct,

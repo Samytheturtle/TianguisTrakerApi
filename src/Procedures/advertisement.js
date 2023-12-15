@@ -19,8 +19,10 @@ const SPI_UpdateProductAvaible = "UPDATE producto SET estadoProducto = 'Disponib
 const SPI_DeletePulledApart = "DELETE FROM apartado WHERE idAnuncioApartado = ?";
 const SPI_GetCategorys = "SELECT * FROM categoria";
 const SPI_GetIdAdvertisement = "SELECT idAnuncio from anuncio WHERE fotoAnuncio = ?";
+const SPI_GetAdvertisementsBySeller = "SELECT * FROM anuncio WHERE idVendedorAnuncio = ?";
 
 module.exports = {
+    'SPI_GetAdvertisementsBySeller': SPI_GetAdvertisementsBySeller,
     'SPI_GetIdAdvertisement': SPI_GetIdAdvertisement,
     'SPI_GetCategorys': SPI_GetCategorys,
     'SPI_DeletePulledApart': SPI_DeletePulledApart,

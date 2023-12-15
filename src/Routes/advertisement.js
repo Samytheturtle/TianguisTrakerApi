@@ -20,5 +20,6 @@ router.get("/getAdvertisements",Advertisement.getAdvertisements);
 router.get("/getAdvertisementsPulledApartSeller/:idVendedor",validateToken,Advertisement.getAdvertisementsPulledApartSeller);
 router.put("/updateAdvertisementAvaible/",validateToken,Advertisement.updateProductAvaible);
 router.get("/advertisement/categorys",Advertisement.getCategorys);
+router.get("/getAdvertisementBySeller/:idVendedorAnuncio",Advertisement.getAdvertisementBySeller);
 
 module.exports = router;
